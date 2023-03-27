@@ -1,0 +1,20 @@
+version: "2.4"
+services:
+  nifi-registry:
+    image: apache/nifi-registry
+    restart: always
+    environment:
+      - KEYSTORE_TYPE=JKS
+      - KEYSTORE_PATH=/opt/nifi-registry/tls/keystore.jks
+      - KEYSTORE_PASSWORD=stoutagtechnifi20220131
+      - TRUSTSTORE_TYPE=JKS
+      - TRUSTSTORE_PATH=/opt/nifi-registry/tls/truststore.jks
+      - TRUSTSTORE_PASSWORD=stoutagtechnifi20220131
+      - AUTH=tls
+      - INITIAL_ADMIN_IDENTITY=CN=admin, OU=NIFI
+    ports:
+      - 18443:18443
+    volumes:
+      - ./nifi-toolkit-1.15.3/tls/nifi-registry.stoutagtech.dev:/opt/nifi-registry/tls
+      - /home/ubuntu/efs/nifi/nifi_registry_flow_storage:/opt/nifi-registry/nifi-registry-current/flow_storage
+

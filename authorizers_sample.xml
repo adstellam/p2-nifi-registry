@@ -1,0 +1,121 @@
+</authorizers>
+20:33:32 ubuntu@ip-172-31-8-114 ~ sudo docker exec nifi-registry_nifi-registry_1 cat /opt/nifi-registry/nifi-registry-current/conf/authorizers.xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+    This file lists the userGroupProviders, accessPolicyProviders, and authorizers to use when running securely. In order
+    to use a specific authorizer it must be configured here and its identifier must be specified in the nifi-registry.properties file.
+    If the authorizer is a managedAuthorizer, it may need to be configured with an accessPolicyProvider and an userGroupProvider.
+    This file allows for configuration of them, but they must be configured in order:
+
+    ...
+    all userGroupProviders
+    all accessPolicyProviders
+    all Authorizers
+    ...
+-->
+<authorizers>
+
+
+    <userGroupProvider>
+        <identifier>file-user-group-provider</identifier>
+        <class>org.apache.nifi.registry.security.authorization.file.FileUserGroupProvider</class>
+        <property name="Users File">./conf/users.xml</property>
+        <property name="Initial User Identity 1">CN=admin, OU=NIFI</property>
+    </userGroupProvider>
+
+    <userGroupProvider>
+        <identifier>database-user-group-provider</identifier>
+        <class>org.apache.nifi.registry.security.authorization.database.DatabaseUserGroupProvider</class>
+        <property name="Initial User Identity 1">CN=admin, OU=NIFI</property>
+    </userGroupProvider>
+
+    <userGroupProvider>
+        <identifier>ldap-user-group-provider</identifier>
+        <class>org.apache.nifi.registry.security.ldap.tenants.LdapUserGroupProvider</class>
+        <property name="Authentication Strategy">START_TLS</property>
+        <property name="Manager DN"></property>
+        <property name="Manager Password"></property>
+        <property name="TLS - Keystore"></property>
+        <property name="TLS - Keystore Password"></property>
+        <property name="TLS - Keystore Type"></property>
+        <property name="TLS - Truststore"></property>
+        <property name="TLS - Truststore Password"></property>
+        <property name="TLS - Truststore Type"></property>
+        <property name="TLS - Client Auth"></property>
+        <property name="TLS - Protocol"></property>
+        <property name="TLS - Shutdown Gracefully"></property>
+        <property name="Referral Strategy">FOLLOW</property>
+        <property name="Connect Timeout">10 secs</property>
+        <property name="Read Timeout">10 secs</property>
+        <property name="Url"></property>
+        <property name="Page Size"></property>
+        <property name="Sync Interval">30 mins</property>
+        <property name="Group Membership - Enforce Case Sensitivity">false</property>
+        <property name="User Search Base"></property>
+        <property name="User Object Class">person</property>
+        <property name="User Search Scope">ONE_LEVEL</property>
+        <property name="User Search Filter"></property>
+        <property name="User Identity Attribute"></property>
+        <property name="User Group Name Attribute"></property>
+        <property name="User Group Name Attribute - Referenced Group Attribute"></property>
+        <property name="Group Search Base"></property>
+        <property name="Group Object Class">group</property>
+        <property name="Group Search Scope">ONE_LEVEL</property>
+        <property name="Group Search Filter"></property>
+        <property name="Group Name Attribute"></property>
+        <property name="Group Member Attribute"></property>
+        <property name="Group Member Attribute - Referenced User Attribute"></property>
+    </userGroupProvider>
+
+    <userGroupProvider>
+        <identifier>shell-user-group-provider</identifier>
+        <class>org.apache.nifi.registry.security.authorization.shell.ShellUserGroupProvider</class>
+        <property name="Refresh Delay">5 mins</property>
+        <property name="Exclude Groups"></property>
+        <property name="Exclude Users"></property>
+        <property name="Command Timeout">60 seconds</property>
+    </userGroupProvider>
+
+    <userGroupProvider>
+        <identifier>composite-user-group-provider</identifier>
+        <class>org.apache.nifi.registry.security.authorization.CompositeUserGroupProvider</class>
+        <property name="User Group Provider 1"></property>
+    </userGroupProvider>
+
+    <userGroupProvider>
+        <identifier>composite-configurable-user-group-provider</identifier>
+        <class>org.apache.nifi.registry.security.authorization.CompositeConfigurableUserGroupProvider</class>
+        <property name="Configurable User Group Provider">file-user-group-provider</property>
+        <property name="User Group Provider 1"></property>
+    </userGroupProvider>
+
+    
+    <accessPolicyProvider>
+        <identifier>file-access-policy-provider</identifier>
+        <class>org.apache.nifi.registry.security.authorization.file.FileAccessPolicyProvider</class>
+        <property name="User Group Provider">file-user-group-provider</property>
+        <property name="Authorizations File">./conf/authorizations.xml</property>
+        <property name="Initial Admin Identity">CN=admin, OU=NIFI</property>
+        <property name="NiFi Identity 1"></property>
+        <property name="NiFi Group Name"></property>
+    </accessPolicyProvider>
+
+    <accessPolicyProvider>
+        <identifier>database-access-policy-provider</identifier>
+        <class>org.apache.nifi.registry.security.authorization.database.DatabaseAccessPolicyProvider</class>
+        <property name="User Group Provider">database-user-group-provider</property>
+        <property name="Initial Admin Identity">CN=admin, OU=NIFI</property>
+        <property name="NiFi Identity 1"></property>
+        <property name="NiFi Group Name"></property>
+    </accessPolicyProvider>
+
+    
+    <authorizer>
+        <identifier>managed-authorizer</identifier>
+        <class>org.apache.nifi.registry.security.authorization.StandardManagedAuthorizer</class>
+        <property name="Access Policy Provider">file-access-policy-provider</property>
+    </authorizer>
+
+
+</authorizers>
